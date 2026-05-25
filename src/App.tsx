@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { MapPin, Phone, Clock, Star, ChevronDown, Menu, X, Instagram, Facebook, Mail, ArrowUp, Send, Sparkles, Flame, UtensilsCrossed, Pizza, Sandwich, IceCreamCone, GlassWater, Heart, Eye } from 'lucide-react';
+import { fallbackMenuItems, fallbackReviews } from './data/fallbackMenu';
 
 /* ──────────────────────────── Types ──────────────────────────── */
 interface MenuItem {
@@ -421,14 +422,14 @@ function MenuSection() {
       const res = await fetch('/api/menu');
       if (!res.ok) {
         console.error('Menu API error:', res.status, res.statusText);
-        setItems([]);
+        setItems(fallbackMenuItems);
         return;
       }
       const data = await res.json();
-      setItems(Array.isArray(data) ? data : []);
+      setItems(Array.isArray(data) && data.length > 0 ? data : fallbackMenuItems);
     } catch (err) {
       console.error('Menu fetch error:', err);
-      setItems([]);
+      setItems(fallbackMenuItems);
     } finally { setLoading(false); }
   };
 
@@ -585,14 +586,14 @@ function ReviewsSection() {
       const res = await fetch('/api/reviews');
       if (!res.ok) {
         console.error('Reviews API error:', res.status, res.statusText);
-        setReviews([]);
+        setReviews(fallbackReviews);
         return;
       }
       const data = await res.json();
-      setReviews(Array.isArray(data) ? data : []);
+      setReviews(Array.isArray(data) && data.length > 0 ? data : fallbackReviews);
     } catch (err) {
       console.error('Reviews fetch error:', err);
-      setReviews([]);
+      setReviews(fallbackReviews);
     } finally { setLoading(false); }
   };
 

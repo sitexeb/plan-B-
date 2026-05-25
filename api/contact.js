@@ -12,8 +12,11 @@ export default async function handler(req, res) {
         .from('contact_messages')
         .select('*')
         .order('created_at', { ascending: false });
-      if (error) throw error;
-      return res.status(200).json(data);
+      if (error) {
+        console.error('Supabase contact query error:', error);
+        throw error;
+      }
+      return res.status(200).json(data || []);
     }
     if (req.method === 'POST') {
       const { name, email, phone, message } = req.body;
@@ -27,7 +30,7 @@ export default async function handler(req, res) {
     }
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('API error:', err);
-    res.status(500).json({ error: err.message });
+    console.error('Contact API error:', err.message || err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }

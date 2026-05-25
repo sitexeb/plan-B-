@@ -12,8 +12,11 @@ export default async function handler(req, res) {
       let query = supabase.from('menu_items').select('*').order('category', { ascending: true }).order('id', { ascending: true });
       if (category) query = query.eq('category', category);
       const { data, error } = await query;
-      if (error) throw error;
-      return res.status(200).json(data);
+      if (error) {
+        console.error('Supabase menu query error:', error);
+        throw error;
+      }
+      return res.status(200).json(data || []);
     }
     if (req.method === 'POST') {
       const { name, description, price, category, image_url, is_popular } = req.body;
@@ -44,7 +47,7 @@ export default async function handler(req, res) {
     }
     res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
-    console.error('API error:', err);
-    res.status(500).json({ error: err.message });
+    console.error('Menu API error:', err.message || err);
+    res.status(500).json({ error: err.message || 'Internal server error' });
   }
 }
