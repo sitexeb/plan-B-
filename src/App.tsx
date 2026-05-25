@@ -419,10 +419,17 @@ function MenuSection() {
   const fetchMenu = async () => {
     try {
       const res = await fetch('/api/menu');
+      if (!res.ok) {
+        console.error('Menu API error:', res.status, res.statusText);
+        setItems([]);
+        return;
+      }
       const data = await res.json();
-      setItems(data);
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
+      setItems(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Menu fetch error:', err);
+      setItems([]);
+    } finally { setLoading(false); }
   };
 
   const handleMouseMove = (e: React.MouseEvent, item: MenuItem) => {
@@ -576,10 +583,17 @@ function ReviewsSection() {
   const fetchReviews = async () => {
     try {
       const res = await fetch('/api/reviews');
+      if (!res.ok) {
+        console.error('Reviews API error:', res.status, res.statusText);
+        setReviews([]);
+        return;
+      }
       const data = await res.json();
-      setReviews(data);
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
+      setReviews(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Reviews fetch error:', err);
+      setReviews([]);
+    } finally { setLoading(false); }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
